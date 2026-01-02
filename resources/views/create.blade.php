@@ -127,6 +127,7 @@ canvas{
     <div class="tools">
         <button onclick="generate()">Generate Frame</button>
         <button class="download" onclick="download()">Download Foto</button>
+        <button id="btnVideo" class="download" onclick="downloadVideo()">Download Video</button>
     </div>
 </div>
 
@@ -351,6 +352,66 @@ async function generate(){
     const frameImg=await ensureFrame();
     await render(frameImg);
 }
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+/* ===== DOWNLOAD VIDEO (record hasil montage di canvas) ===== */
+async function downloadVideo(){
+    if(photos.length !== 6) return alert("Harus 6 foto dulu");
+
+    const btnVideo = document.getElementById("btnVideo");
+    if(btnVideo){
+        btnVideo.disabled = true;
+        btnVideo.textContent = "Rendering video...";
+    }
+
+    try{
+        const frameImg = await ensureFrame();
+
+        // Pastikan canvas sudah berisi hasil akhir (montage)
+        await render(frameImg);
+
+        // Rekam canvas
+        const stream = canvas.captureStream(30); // 30 FPS
+        const chunks = [];
+
+        let mimeType = "video/webm;codecs=vp9";
+        if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = "video/webm;codecs=vp8";
+        if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = "video/webm";
+
+        const rec = new MediaRecorder(stream, { mimeType });
+
+        rec.ondataavailable = e => { if(e.data && e.data.size > 0) chunks.push(e.data); };
+
+        const stopped = new Promise(resolve => { rec.onstop = resolve; });
+
+        rec.start();
+
+        // Durasi video (hasilnya montage statis)
+        await sleep(3000); // 3 detik (ubah kalau mau)
+
+        rec.stop();
+        await stopped;
+
+        const blob = new Blob(chunks, { type: mimeType });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "pixora-frame.webm";
+        a.click();
+
+        setTimeout(()=>URL.revokeObjectURL(url), 1000);
+
+    }catch(err){
+        console.error(err);
+        alert("Gagal membuat video. Coba di Chrome/Edge ya.");
+    }finally{
+        if(btnVideo){
+            btnVideo.disabled = false;
+            btnVideo.textContent = "Download Video";
+        }
+    }
+}
+
 </script>
 
 </body>
