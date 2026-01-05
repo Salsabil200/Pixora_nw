@@ -1,417 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>PIXORA – Create</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>PIXORA – Studio Creative</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="{{ asset('css/create.css') }}">
 
-<style>
-body{
-    margin:0;
-    font-family:'Segoe UI',sans-serif;
-    background:#fff7fb;
-}
-header{
-    padding:18px 24px;
-    background:white;
-    box-shadow:0 6px 20px rgba(0,0,0,.08);
-    display:flex;
-    justify-content:space-between;
-}
-header a{
-    text-decoration:none;
-    color:#111;
-    font-weight:600;
-}
-.container{
-    max-width:1200px;
-    margin:auto;
-    padding:30px;
-    display:grid;
-    grid-template-columns:420px 1fr;
-    gap:30px;
-}
-.upload{
-    background:white;
-    padding:20px;
-    border-radius:18px;
-    box-shadow:0 10px 24px rgba(0,0,0,.08);
-    position:relative;
-    z-index:50;
-}
-.tools{
-    display:flex;
-    gap:10px;
-    margin:15px 0;
-    flex-wrap:wrap;
-}
-button{
-    padding:12px 22px;
-    border:none;
-    border-radius:999px;
-    font-weight:800;
-    background:#ec4899;
-    color:white;
-    cursor:pointer;
-}
-button:hover{ opacity:.9; }
-.download{ background:#111; }
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="{{ config('midtrans.client_key') }}"></script>
+    
+    <style>
+        .btn-reset {
+            background-color: #ef4444 !important;
+            color: white !important;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-reset:hover { background-color: #dc2626 !important; }
 
-.preview{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-top:15px;
-}
-.preview img{
-    width:100%;
-    height:90px;
-    object-fit:cover;
-    border-radius:10px;
-}
-video{
-    width:100%;
-    border-radius:14px;
-    margin-top:10px;
-    display:none;
-}
-.canvas-wrap{
-    display:flex;
-    justify-content:center;
-    align-items:flex-start;
-}
-canvas{
-    width:100%;
-    max-width:420px;
-    border-radius:18px;
-    box-shadow:0 20px 40px rgba(0,0,0,.2);
-    background:#fff;
-}
-.hint{
-    font-size:13px;
-    color:#777;
-    margin-top:10px;
-}
-</style>
+        .preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+            padding: 0;
+        }
 
-<script src="https://app.sandbox.midtrans.com/snap/snap.js"
-        data-client-key="{{ config('midtrans.client_key') }}"></script>
+        .preview-item {
+            position: relative;
+            cursor: pointer;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid #ec4899;
+            display: block;
+        }
+
+        .preview-item:hover::after {
+            content: "✕";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(239, 68, 68, 0.8);
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+    </style>
 </head>
 
 <body>
 
 <header>
-    <strong>PIXORA</strong>
-    <a href="/frames">← Back to Frames</a>
+    <a href="{{ route('frames.index') }}" class="logo-wrap" style="text-decoration: none;">
+        <svg width="120" height="35" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="pixoraGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <text x="0" y="30" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="28" fill="url(#pixoraGrad)">
+                PIXORA
+            </text>
+        </svg>
+    </a>
+    <a href="{{ route('frames.index') }}" style="text-decoration: none; font-weight: 700; color: #4b5563; font-family: sans-serif;">← Back to Frames</a>
 </header>
 
 <div class="container">
+    <div class="upload">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0; font-family: sans-serif;">✨ Studio Creative</h3>
+            <button onclick="resetAll()" class="btn-reset">Reset Semua</button>
+        </div>
+        <p style="font-size: 14px; color: #6b7280; margin-bottom: 20px; font-family: sans-serif;">Maksimal 6 foto. Klik foto untuk hapus.</p>
 
-<div class="upload">
-    <h3>Upload 6 Photos</h3>
-    <p>Pilih 6 foto (kamera / galeri)</p>
+        <div class="tools">
+            <button onclick="openGallery()">📁 Galeri</button>
+            <button onclick="openCamera()">📷 Kamera</button>
+            <button class="btn-snap" onclick="capturePhoto()">📸 Snap!</button>
+        </div>
 
-    <div class="tools">
-        <button onclick="openGallery()">📁 Galeri</button>
-        <button onclick="openCamera()">📷 Kamera</button>
-        <button onclick="capturePhoto()">📸 Ambil Foto</button>
+        <input type="file" id="photos" accept="image/*" multiple hidden>
+        
+        <video id="camera" autoplay playsinline muted style="display:none; width: 100%; border-radius: 14px; margin-bottom: 15px; border: 2px solid #ec4899; background: #000;"></video>
+
+        <div class="preview" id="preview"></div>
+
+        <div class="tools">
+            <button class="btn-primary" style="flex: 1;" onclick="generatePhoto()">Generate Foto</button>
+            <button class="btn-secondary" style="flex: 1;" onclick="payAndGenerateVideo()">Generate Video (Premium)</button>
+        </div>
+        
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        
+        <div class="tools">
+            <button class="download" onclick="downloadImage()">💾 Download Foto (PNG)</button>
+            <button id="btnVideo" class="download" style="background-color: #4f46e5;" onclick="downloadVideo()">🎥 Download Video (WebM)</button>
+        </div>
     </div>
 
-    <input type="file" id="photos" accept="image/*" multiple hidden>
-    <video id="camera" autoplay playsinline muted></video>
-
-    <div class="preview" id="preview"></div>
-
-    <p class="hint">* Wajib 6 foto</p>
-
-    <div class="tools">
-        <button onclick="generate()">Generate Frame</button>
-        <button class="download" onclick="download()">Download Foto</button>
-        <button id="btnVideo" class="download" onclick="downloadVideo()">Download Video</button>
+    <div class="canvas-wrap">
+        <canvas id="canvas"></canvas>
     </div>
-</div>
-
-<div class="canvas-wrap">
-    <canvas id="canvas"></canvas>
-</div>
-
 </div>
 
 <script>
-const frameSrc = "/{{ $frame }}";
-const fileInput = document.getElementById('photos');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const preview = document.getElementById('preview');
-const video = document.getElementById('camera');
+    const frameSrc = "{{ asset($frame) }}"; 
+    const fileInput = document.getElementById('photos');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d', { alpha: true });
+    const preview = document.getElementById('preview');
+    const video = document.getElementById('camera');
 
-let photos = [];
-let cameraStream = null;
-let frameImgCache = null;
+    let photos = [];
+    let cameraStream = null;
+    let frameImgCache = null;
+    let slotsCache = []; 
+    let animationId = null; 
+    let isAnimating = false;
+    let hasPaid = false; // Status Pembayaran
 
-/* ===== LOAD IMAGE ===== */
-async function loadImage(src){
-    const img = new Image();
-    img.src = src;
-    await img.decode();
-    return img;
-}
-
-/* ===== FRAME CACHE ===== */
-async function ensureFrame(){
-    if(frameImgCache) return frameImgCache;
-    frameImgCache = await loadImage(frameSrc);
-    canvas.width  = frameImgCache.naturalWidth;
-    canvas.height = frameImgCache.naturalHeight;
-    return frameImgCache;
-}
-
-/* ===== MASK SLOT DETECTOR (ADD ONLY) ===== */
-function detectSlotsFromMask(maskImg){
-    const t=document.createElement("canvas");
-    t.width=maskImg.width;
-    t.height=maskImg.height;
-    const tc=t.getContext("2d");
-    tc.drawImage(maskImg,0,0);
-
-    const img=tc.getImageData(0,0,t.width,t.height);
-    const data=img.data;
-    const w=t.width,h=t.height;
-    const visited=new Uint8Array(w*h);
-    const slots=[];
-
-    function isBlack(i){
-        return data[i*4]<20 && data[i*4+1]<20 && data[i*4+2]<20;
+    async function loadImage(src){
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.onload = () => resolve(img);
+            img.onerror = (e) => reject(e);
+            img.src = src;
+        });
     }
 
-    function flood(start){
-        let minX=w,minY=h,maxX=0,maxY=0;
-        const stack=[start];
-        visited[start]=1;
-        while(stack.length){
-            const i=stack.pop();
-            const x=i%w,y=(i/w)|0;
-            minX=Math.min(minX,x);
-            minY=Math.min(minY,y);
-            maxX=Math.max(maxX,x);
-            maxY=Math.max(maxY,y);
-            [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy])=>{
-                const nx=x+dx,ny=y+dy;
-                if(nx<0||ny<0||nx>=w||ny>=h) return;
-                const ni=ny*w+nx;
-                if(!visited[ni] && isBlack(ni)){
-                    visited[ni]=1;
-                    stack.push(ni);
+    async function ensureFrame(){
+        if(frameImgCache) return frameImgCache;
+        try {
+            frameImgCache = await loadImage(frameSrc);
+            canvas.width  = frameImgCache.naturalWidth;
+            canvas.height = frameImgCache.naturalHeight;
+            slotsCache = await detectSlots(frameImgCache);
+            return frameImgCache;
+        } catch (e) {
+            console.error("Gagal memuat frame:", frameSrc);
+        }
+    }
+
+    async function detectSlots(frameImg) {
+        const temp = document.createElement("canvas");
+        temp.width = canvas.width; temp.height = canvas.height;
+        const tctx = temp.getContext("2d");
+        tctx.drawImage(frameImg, 0, 0);
+        const imgData = tctx.getImageData(0, 0, temp.width, temp.height);
+        const data = imgData.data, w = temp.width, h = temp.height;
+        const visited = new Uint8Array(w * h);
+        const slots = [];
+
+        function isEmpty(i) {
+            const a = data[i * 4 + 3];
+            if (a < 50) return true;
+            const r = data[i * 4], g = data[i * 4 + 1], b = data[i * 4 + 2];
+            return (r > 240 && g > 240 && b > 240);
+        }
+
+        for (let i = 0; i < w * h; i++) {
+            if (!visited[i] && isEmpty(i)) {
+                let minX = w, minY = h, maxX = 0, maxY = 0;
+                const stack = [i];
+                visited[i] = 1;
+                while (stack.length) {
+                    const idx = stack.pop(), x = idx % w, y = (idx / w) | 0;
+                    minX = Math.min(minX, x); minY = Math.min(minY, y);
+                    maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
+                    [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => {
+                        const nx = x + dx, ny = y + dy;
+                        const ni = ny * w + nx;
+                        if (nx >= 0 && ny >= 0 && nx < w && ny < h && !visited[ni] && isEmpty(ni)) {
+                            visited[ni] = 1; stack.push(ni);
+                        }
+                    });
+                }
+                const box = { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
+                if (box.w > 100 && box.h > 100) slots.push(box);
+            }
+        }
+        return slots.sort((a, b) => a.y === b.y ? a.x - b.x : a.y - b.y);
+    }
+
+    async function initCanvas() {
+        await ensureFrame();
+        if(frameImgCache) {
+            ctx.drawImage(frameImgCache, 0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    // FUNGSI PEMBAYARAN & GENERATE
+    async function payAndGenerateVideo() {
+        if (photos.length < 1) return alert("Pilih foto dulu!");
+        
+        if (hasPaid) {
+            startVideoLogic();
+            return;
+        }
+
+        try {
+            const response = await fetch("{{ route('payment.tokenize') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
                 }
             });
+            const data = await response.json();
+
+            window.snap.pay(data.token, {
+                onSuccess: function(result) {
+                    hasPaid = true;
+                    alert("Pembayaran Berhasil! Video sedang diproses.");
+                    startVideoLogic();
+                    // Update status di DB lokal
+                    fetch("/payment/update-local", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}"},
+                        body: JSON.stringify({order_id: result.order_id, status: 'settlement'})
+                    });
+                },
+                onPending: function(result) { alert("Selesaikan pembayaran anda."); },
+                onError: function(result) { alert("Pembayaran Gagal."); }
+            });
+        } catch (err) {
+            alert("Sistem sibuk, coba lagi nanti.");
         }
-        return {x:minX,y:minY,w:maxX-minX,h:maxY-minY};
     }
 
-    for(let i=0;i<w*h;i++){
-        if(!visited[i] && isBlack(i)){
-            const box=flood(i);
-            if(box.w>120 && box.h>160) slots.push(box);
+    function startVideoLogic() {
+        isAnimating = true;
+        if(animationId) cancelAnimationFrame(animationId);
+        let lastSwitch = 0;
+        let photoOffset = 0;
+        const interval = 600;
+        function loop(timestamp) {
+            if (!lastSwitch) lastSwitch = timestamp;
+            if (timestamp - lastSwitch > interval) {
+                photoOffset++;
+                lastSwitch = timestamp;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            slotsCache.forEach((slot, i) => {
+                const imgIndex = (i + photoOffset) % photos.length;
+                const img = photos[imgIndex];
+                if (img) drawPhotoInSlot(img, slot);
+            });
+            ctx.drawImage(frameImgCache, 0, 0, canvas.width, canvas.height);
+            animationId = requestAnimationFrame(loop);
         }
+        animationId = requestAnimationFrame(loop);
     }
-    return slots.sort((a,b)=>a.y===b.y?a.x-b.x:a.y-b.y);
-}
 
-/* ===== GALERI ===== */
-function openGallery(){ fileInput.click(); }
-fileInput.addEventListener('change', async e=>{
-    photos=[];
-    for(const f of Array.from(e.target.files).slice(0,6)){
-        photos.push(await loadImage(URL.createObjectURL(f)));
-    }
-    refreshPreview();
-});
-
-/* ===== KAMERA ===== */
-async function openCamera(){
-    cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false});
-    video.srcObject=cameraStream;
-    video.style.display='block';
-}
-
-/* ===== CAPTURE ===== */
-function capturePhoto(){
-    if(!video.srcObject) return alert("Kamera belum aktif");
-    if(photos.length>=6) return alert("Maksimal 6 foto");
-    const c=document.createElement('canvas');
-    c.width=video.videoWidth;
-    c.height=video.videoHeight;
-    const cx=c.getContext('2d');
-    cx.scale(-1,1);
-    cx.drawImage(video,-c.width,0);
-    c.toBlob(async b=>{
-        photos.push(await loadImage(URL.createObjectURL(b)));
+    function openGallery(){ fileInput.click(); }
+    
+    fileInput.addEventListener('change', async e=>{
+        const files = Array.from(e.target.files);
+        for(const f of files){
+            if(photos.length < 6) {
+                photos.push(await loadImage(URL.createObjectURL(f)));
+            }
+        }
         refreshPreview();
     });
-}
 
-/* ===== PREVIEW ===== */
-function refreshPreview(){
-    preview.innerHTML='';
-    photos.forEach(img=>{
-        const im=document.createElement('img');
-        im.src=img.src;
-        preview.appendChild(im);
-    });
-}
-
-/* ===== RENDER (MASK PRIORITY, FALLBACK AUTO) ===== */
-async function render(frameImg){
-    canvas.width=frameImg.naturalWidth;
-    canvas.height=frameImg.naturalHeight;
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    let slotsFromMask=null;
-    try{
-        const maskSrc=frameSrc.replace(".png","_mask.png");
-        const maskImg=await loadImage(maskSrc);
-        slotsFromMask=detectSlotsFromMask(maskImg);
-    }catch(e){}
-
-    let slots=[];
-    if(slotsFromMask && slotsFromMask.length){
-        slots=slotsFromMask;
-    }else{
-        const temp=document.createElement("canvas");
-        temp.width=canvas.width;
-        temp.height=canvas.height;
-        const tctx=temp.getContext("2d");
-        tctx.drawImage(frameImg,0,0);
-        const img=tctx.getImageData(0,0,temp.width,temp.height);
-        const data=img.data,w=temp.width,h=temp.height;
-        const visited=new Uint8Array(w*h);
-
-        function isEmpty(i){
-            const r=data[i*4],g=data[i*4+1],b=data[i*4+2],a=data[i*4+3];
-            if(a<20) return true;
-            const max=Math.max(r,g,b),min=Math.min(r,g,b);
-            return (r+g+b)/3>200 && (max-min)<25;
+    async function openCamera(){
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false});
+            video.srcObject = cameraStream;
+            video.style.display = 'block';
+        } catch (err) {
+            alert("Kamera tidak diizinkan atau tidak tersedia");
         }
-
-        function flood(start){
-            let minX=w,minY=h,maxX=0,maxY=0;
-            const stack=[start];
-            visited[start]=1;
-            while(stack.length){
-                const i=stack.pop(),x=i%w,y=(i/w)|0;
-                minX=Math.min(minX,x);
-                minY=Math.min(minY,y);
-                maxX=Math.max(maxX,x);
-                maxY=Math.max(maxY,y);
-                [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy])=>{
-                    const nx=x+dx,ny=y+dy;
-                    if(nx<0||ny<0||nx>=w||ny>=h) return;
-                    const ni=ny*w+nx;
-                    if(!visited[ni] && isEmpty(ni)){
-                        visited[ni]=1;
-                        stack.push(ni);
-                    }
-                });
-            }
-            return {x:minX,y:minY,w:maxX-minX,h:maxY-minY};
-        }
-
-        for(let i=0;i<w*h;i++){
-            if(!visited[i] && isEmpty(i)){
-                const box=flood(i);
-                if(box.w>120 && box.h>160) slots.push(box);
-            }
-        }
-        slots.sort((a,b)=>a.y===b.y?a.x-b.x:a.y-b.y);
     }
 
-    slots.slice(0,photos.length).forEach((slot,i)=>{
-        const img=photos[i];
-        const rImg=img.width/img.height;
-        const rBox=slot.w/slot.h;
-        let dw,dh;
-        if(rImg>rBox){ dh=slot.h; dw=dh*rImg; }
-        else{ dw=slot.w; dh=dw/rImg; }
-        const dx=slot.x+(slot.w-dw)/2;
-        const dy=slot.y+(slot.h-dh)/2;
+    function capturePhoto(){
+        if(!video.srcObject) return alert("Kamera belum aktif");
+        if(photos.length>=6) return alert("Maksimal 6 foto");
+        const c = document.createElement('canvas');
+        c.width = video.videoWidth; c.height = video.videoHeight;
+        const cx = c.getContext('2d');
+        cx.translate(c.width, 0); cx.scale(-1, 1);
+        cx.drawImage(video, 0, 0);
+        loadImage(c.toDataURL('image/png')).then(img => {
+            photos.push(img);
+            refreshPreview();
+        });
+    }
 
+    function deletePhoto(index) {
+        photos.splice(index, 1);
+        refreshPreview();
+    }
+
+    function resetAll() {
+        if(confirm("Hapus semua foto?")) {
+            photos = [];
+            isAnimating = false;
+            hasPaid = false; // Reset status bayar
+            if(animationId) cancelAnimationFrame(animationId);
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.drawImage(frameImgCache, 0, 0, canvas.width, canvas.height);
+            refreshPreview();
+        }
+    }
+
+    function refreshPreview(){
+        preview.innerHTML='';
+        photos.forEach((img, index)=>{
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+            div.onclick = () => deletePhoto(index);
+            const im = document.createElement('img');
+            im.src = img.src;
+            div.appendChild(im);
+            preview.appendChild(div);
+        });
+    }
+
+    function drawPhotoInSlot(img, slot) {
+        const rImg = img.width / img.height;
+        const rBox = slot.w / slot.h;
+        let dw, dh, dx, dy;
+        if(rImg > rBox){ dh=slot.h; dw=dh*rImg; }
+        else{ dw=slot.w; dh=dw/rImg; }
+        dx = slot.x + (slot.w - dw) / 2;
+        dy = slot.y + (slot.h - dh) / 2;
         ctx.save();
         ctx.beginPath();
-        ctx.rect(slot.x,slot.y,slot.w,slot.h);
+        ctx.rect(slot.x, slot.y, slot.w, slot.h);
         ctx.clip();
-        ctx.drawImage(img,dx,dy,dw,dh);
+        ctx.drawImage(img, dx, dy, dw, dh);
         ctx.restore();
-    });
-
-    ctx.drawImage(frameImg,0,0,canvas.width,canvas.height);
-}
-
-/* ===== GENERATE ===== */
-async function generate(){
-    if(photos.length!==6) return alert("Harus 6 foto");
-    const frameImg=await ensureFrame();
-    await render(frameImg);
-}
-function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
-/* ===== DOWNLOAD VIDEO (record hasil montage di canvas) ===== */
-async function downloadVideo(){
-    if(photos.length !== 6) return alert("Harus 6 foto dulu");
-
-    const btnVideo = document.getElementById("btnVideo");
-    if(btnVideo){
-        btnVideo.disabled = true;
-        btnVideo.textContent = "Rendering video...";
     }
 
-    try{
-        const frameImg = await ensureFrame();
+    function generatePhoto(){
+        if(photos.length < 1) return alert("Pilih foto dulu!");
+        isAnimating = false;
+        if(animationId) cancelAnimationFrame(animationId);
+        ensureFrame().then(frameImg => {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            slotsCache.forEach((slot, i) => {
+                if(photos[i]) drawPhotoInSlot(photos[i], slot);
+            });
+            ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+        });
+    }
 
-        // Pastikan canvas sudah berisi hasil akhir (montage)
-        await render(frameImg);
+    function downloadImage(){
+        const link = document.createElement('a');
+        link.download = 'pixora-' + Date.now() + '.png';
+        link.href = canvas.toDataURL('image/png', 1.0);
+        link.click();
+    }
 
-        // Rekam canvas
-        const stream = canvas.captureStream(30); // 30 FPS
-        const chunks = [];
-
-        let mimeType = "video/webm;codecs=vp9";
-        if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = "video/webm;codecs=vp8";
-        if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = "video/webm";
-
-        const rec = new MediaRecorder(stream, { mimeType });
-
-        rec.ondataavailable = e => { if(e.data && e.data.size > 0) chunks.push(e.data); };
-
-        const stopped = new Promise(resolve => { rec.onstop = resolve; });
-
-        rec.start();
-
-        // Durasi video (hasilnya montage statis)
-        await sleep(3000); // 3 detik (ubah kalau mau)
-
-        rec.stop();
-        await stopped;
-
-        const blob = new Blob(chunks, { type: mimeType });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "pixora-frame.webm";
-        a.click();
-
-        setTimeout(()=>URL.revokeObjectURL(url), 1000);
-
-    }catch(err){
-        console.error(err);
-        alert("Gagal membuat video. Coba di Chrome/Edge ya.");
-    }finally{
-        if(btnVideo){
+    async function downloadVideo(){
+        if(!hasPaid) return alert("Fitur Video adalah Premium. Silahkan klik 'Generate Video' untuk membayar.");
+        if(!isAnimating) return alert("Video belum di-generate.");
+        
+        const btnVideo = document.getElementById("btnVideo");
+        btnVideo.disabled = true;
+        btnVideo.textContent = "⏱️ Memproses...";
+        try {
+            const stream = canvas.captureStream(60); 
+            const recorder = new MediaRecorder(stream, { 
+                mimeType: 'video/webm;codecs=vp9',
+                videoBitsPerSecond: 8000000 
+            });
+            const chunks = [];
+            recorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'pixora-video-' + Date.now() + '.webm';
+                a.click();
+                btnVideo.disabled = false;
+                btnVideo.textContent = "🎥 Download Video (WebM)";
+            };
+            recorder.start();
+            setTimeout(() => recorder.stop(), 4000); 
+        } catch (e) {
+            alert("Gagal memproses video");
             btnVideo.disabled = false;
-            btnVideo.textContent = "Download Video";
         }
     }
-}
 
+    window.onload = initCanvas;
 </script>
 
 </body>

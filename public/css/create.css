@@ -1,0 +1,158 @@
+/* PIXORA - Create Page Stylesheet */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+/* --- Root & Base --- */
+body {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #fdf2f8; 
+    /* EFEK TITIK-TITIK (DOTTED PATTERN) */
+    background-image: radial-gradient(#f472b6 0.8px, transparent 0.8px);
+    background-size: 24px 24px;
+    color: #1f2937;
+    overflow-x: hidden;
+}
+
+/* --- Header --- */
+header {
+    padding: 12px 40px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+header .logo-wrap {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+header a {
+    text-decoration: none;
+    color: #4b5563;
+    font-weight: 600;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+header a:hover { color: #ec4899; }
+
+/* --- Layout --- */
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* --- Sidebar Upload --- */
+.upload {
+    background-color: #ffffff;
+    padding: 28px;
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(236, 72, 153, 0.1);
+    border: 1px solid #fce7f3;
+}
+
+.upload h3 {
+    margin: 0 0 10px 0;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: #111827;
+}
+
+.tools {
+    display: flex;
+    gap: 12px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+}
+
+/* --- Buttons --- */
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+button:hover { transform: translateY(-2px); opacity: 0.9; }
+button:active { transform: scale(0.98); }
+
+/* Default Gray Button */
+button:not(.btn-snap):not(.btn-primary):not(.btn-secondary):not(.download) {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.btn-snap { background-color: #111827; color: white; }
+.btn-primary { 
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    color: white; 
+}
+.btn-secondary { 
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white; 
+}
+
+.download { 
+    background-color: #111827; 
+    color: white;
+    width: 100%;
+    justify-content: center;
+}
+
+/* --- Photo Preview Grid --- */
+.preview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+    padding: 12px;
+    background-color: #f9fafb;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    min-height: 80px;
+}
+
+.preview img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* --- Canvas Area --- */
+.canvas-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+canvas {
+    width: 100%;
+    max-width: 450px;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+    background-color: white;
+}
+
+.hint { font-size: 12px; color: #9ca3af; margin-top: 10px; text-align: center; }
+
+@media (max-width: 900px) {
+    .container { grid-template-columns: 1fr; }
+    header { padding: 12px 20px; }
+}
