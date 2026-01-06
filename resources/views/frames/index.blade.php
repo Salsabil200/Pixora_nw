@@ -37,10 +37,11 @@
 
     @php
     $season = [
-        ['name'=>'Summer','file'=>'assets/frames/season/Summer.png','desc'=>'Cerah, hangat, dan penuh energi'],
-        ['name'=>'Tropical','file'=>'assets/frames/season/Tropical.png','desc'=>'Eksotis dan segar ala tropis'],
-        ['name'=>'Pumpkin','file'=>'assets/frames/season/Pumpkin.png','desc'=>'Hangat dan cozy bernuansa gugur'],
-        ['name'=>'Night Christmas','file'=>'assets/frames/season/NightChristmas.png','desc'=>'Malam Natal yang mewah dan magis'],
+        ['name'=>'Summer','file'=>'assets/frames/season/Summer.png','desc'=>'Auto cerah! Foto jadi kelihatan fresh dan penuh vibes seru'],
+        ['name'=>'Tropical','file'=>'assets/frames/season/Tropical.png','desc'=>'Vibes liburan langsung kerasa, walau cuma foto di sini'],
+        ['name'=>'Pumpkin','file'=>'assets/frames/season/Pumpkin.png','desc'=>'Hangat, cozy, dan bikin momen bareng makin kerasa dekat'],
+        ['name'=>'Night Christmas','file'=>'assets/frames/season/NightChristmas.png','desc'=>'Foto jadi keliatan mewah, vibes Natalnya dapet banget'],
+        ['name'=>'Winter','file'=>'assets/frames/lifestyle/winter.png','desc'=>'Simple tapi bold, bikin foto kelihatan clean dan estetik'],
     ];
     @endphp
 
@@ -63,10 +64,10 @@
 
     @php
     $art = [
-        ['name'=>'barbershop','file'=>'assets/frames/art/barbershop.png','desc'=>'Minimalis, rapi, dan modern'],
-        ['name'=>'Blue Art','file'=>'assets/frames/art/BlueArt.png','desc'=>'Biru elegan yang menenangkan'],
-        ['name'=>'Free Frame Boothlab 5','file'=>'assets/frames/art/Free Frame Boothlab 5.png','desc'=>'Lembut, manis, dan estetik'],
-        ['name'=>'clean','file'=>'assets/frames/art/clean.png','desc'=>'Lembut, manis, dan estetik'],
+        ['name'=>'Urban Trim','file'=>'assets/frames/art/barbershop.png','desc'=>'Minimalis tapi tetep keren, cocok buat semua gaya foto'],
+        ['name'=>'Blue Art','file'=>'assets/frames/art/BlueArt.png','desc'=>'Vibes kalem yang bikin foto keliatan classy tanpa effort'],
+        ['name'=>'Graffiti Glow','file'=>'assets/frames/art/Free Frame Boothlab 5.png','desc'=>'Full warna, full ekspresi — foto kamu auto standout'],
+        ['name'=>'Peach Royale','file'=>'assets/frames/art/clean.png','desc'=>'Soft tapi elegan, bikin foto keliatan manis dan classy'],
     ];
     @endphp
 
@@ -89,8 +90,9 @@
 
     @php
     $nature = [
-        ['name'=>'Free Frame Boothlab 3','file'=>'assets/frames/nature/Free Frame Boothlab 3.png','desc'=>'Tropis ceria dengan sentuhan unik'],
-        ['name'=>'last','file'=>'assets/frames/nature/last.png','desc'=>'Tropis ceria dengan sentuhan unik'],
+        ['name'=>'Earthy Touch','file'=>'assets/frames/nature/last.png','desc'=>'Natural vibes yang bikin foto keliatan hangat dan adem'],
+        ['name'=>'Nature Luxe','file'=>'assets/frames/lifestyle/leaf.png','desc'=>'Estetik alami tapi tetep keliatan mewah'],
+        ['name'=>'Golden Blush','file'=>'assets/frames/lifestyle/pink.png','desc'=>'Lembut, elegan, dan bikin foto keliatan glowing'],
     ];
     @endphp
 
@@ -113,10 +115,8 @@
 
     @php
     $lifestyle = [
-        ['name'=>'glam','file'=>'assets/frames/lifestyle/glam.png','desc'=>'Biru kasual untuk sehari-hari'],
-        ['name'=>'leaf','file'=>'assets/frames/lifestyle/leaf.png','desc'=>'Mewah dan berkelas'],
-        ['name'=>'pink','file'=>'assets/frames/lifestyle/pink.png','desc'=>'Bold dengan vibe malam'],
-        ['name'=>'winter','file'=>'assets/frames/lifestyle/winter.png','desc'=>'Bold dengan vibe malam'],
+        ['name'=>'Emerald Glam','file'=>'assets/frames/lifestyle/glam.png','desc'=>'Dark vibes tapi classy, foto kamu langsung naik level'],
+        ['name'=>'Electric Purple','file'=>'assets/frames/nature/Free Frame Boothlab 3.png','desc'=>'Neon vibes on! Foto jadi kelihatan hidup dan super catchy'],
     ];
     @endphp
 

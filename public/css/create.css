@@ -5,7 +5,7 @@
 body {
     margin: 0;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: #fdf2f8; 
+    background-color: #fdf2f8;
     /* EFEK TITIK-TITIK (DOTTED PATTERN) */
     background-image: radial-gradient(#f472b6 0.8px, transparent 0.8px);
     background-size: 24px 24px;
@@ -100,17 +100,17 @@ button:not(.btn-snap):not(.btn-primary):not(.btn-secondary):not(.download) {
 }
 
 .btn-snap { background-color: #111827; color: white; }
-.btn-primary { 
+.btn-primary {
     background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-    color: white; 
+    color: white;
 }
-.btn-secondary { 
+.btn-secondary {
     background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    color: white; 
+    color: white;
 }
 
-.download { 
-    background-color: #111827; 
+.download {
+    background-color: #111827;
     color: white;
     width: 100%;
     justify-content: center;

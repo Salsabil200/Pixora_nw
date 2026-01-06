@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <title>PIXORA – Studio Creative</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <link rel="stylesheet" href="{{ asset('css/create.css') }}">
 
     <script src="https://app.sandbox.midtrans.com/snap/snap.js"
             data-client-key="{{ config('midtrans.client_key') }}"></script>
-    
+
     <style>
         .btn-reset {
             background-color: #ef4444 !important;
@@ -102,7 +102,7 @@
         </div>
 
         <input type="file" id="photos" accept="image/*" multiple hidden>
-        
+
         <video id="camera" autoplay playsinline muted style="display:none; width: 100%; border-radius: 14px; margin-bottom: 15px; border: 2px solid #ec4899; background: #000;"></video>
 
         <div class="preview" id="preview"></div>
@@ -111,9 +111,9 @@
             <button class="btn-primary" style="flex: 1;" onclick="generatePhoto()">Generate Foto</button>
             <button class="btn-secondary" style="flex: 1;" onclick="payAndGenerateVideo()">Generate Video (Premium)</button>
         </div>
-        
+
         <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
-        
+
         <div class="tools">
             <button class="download" onclick="downloadImage()">💾 Download Foto (PNG)</button>
             <button id="btnVideo" class="download" style="background-color: #4f46e5;" onclick="downloadVideo()">🎥 Download Video (WebM)</button>
@@ -126,7 +126,7 @@
 </div>
 
 <script>
-    const frameSrc = "{{ asset($frame) }}"; 
+    const frameSrc = "{{ asset($frame) }}";
     const fileInput = document.getElementById('photos');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d', { alpha: true });
@@ -136,8 +136,8 @@
     let photos = [];
     let cameraStream = null;
     let frameImgCache = null;
-    let slotsCache = []; 
-    let animationId = null; 
+    let slotsCache = [];
+    let animationId = null;
     let isAnimating = false;
     let hasPaid = false; // Status Pembayaran
 
@@ -215,7 +215,7 @@
     // FUNGSI PEMBAYARAN & GENERATE
     async function payAndGenerateVideo() {
         if (photos.length < 1) return alert("Pilih foto dulu!");
-        
+
         if (hasPaid) {
             startVideoLogic();
             return;
@@ -276,7 +276,7 @@
     }
 
     function openGallery(){ fileInput.click(); }
-    
+
     fileInput.addEventListener('change', async e=>{
         const files = Array.from(e.target.files);
         for(const f of files){
@@ -380,15 +380,15 @@
     async function downloadVideo(){
         if(!hasPaid) return alert("Fitur Video adalah Premium. Silahkan klik 'Generate Video' untuk membayar.");
         if(!isAnimating) return alert("Video belum di-generate.");
-        
+
         const btnVideo = document.getElementById("btnVideo");
         btnVideo.disabled = true;
         btnVideo.textContent = "⏱️ Memproses...";
         try {
-            const stream = canvas.captureStream(60); 
-            const recorder = new MediaRecorder(stream, { 
+            const stream = canvas.captureStream(60);
+            const recorder = new MediaRecorder(stream, {
                 mimeType: 'video/webm;codecs=vp9',
-                videoBitsPerSecond: 8000000 
+                videoBitsPerSecond: 8000000
             });
             const chunks = [];
             recorder.ondataavailable = e => { if(e.data.size > 0) chunks.push(e.data); };
@@ -403,7 +403,7 @@
                 btnVideo.textContent = "🎥 Download Video (WebM)";
             };
             recorder.start();
-            setTimeout(() => recorder.stop(), 4000); 
+            setTimeout(() => recorder.stop(), 4000);
         } catch (e) {
             alert("Gagal memproses video");
             btnVideo.disabled = false;
