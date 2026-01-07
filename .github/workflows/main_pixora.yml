@@ -20,7 +20,6 @@ jobs:
         with:
           php-version: '8.2'
           extensions: pdo_mysql
-          ini-values: post_max_size=256M, upload_max_filesize=256M
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
@@ -31,10 +30,10 @@ jobs:
 
       - name: Install Composer dependencies
         run: |
-          composer install --no-dev --prefer-dist --no-progress --no-interaction
+          composer install --no-dev --prefer-dist --no-interaction
           composer dump-autoload -o
 
-      - name: Generate APP Key if missing
+      - name: Generate APP Key
         run: php artisan key:generate --force || true
 
       - name: Optimize Laravel
@@ -49,7 +48,6 @@ jobs:
           path: |
             .
             !node_modules/
-            !vendor/
             !storage/logs/
             !storage/framework/cache/
             !storage/framework/sessions/
@@ -72,9 +70,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_394730327DCF4AE69EBCD51F105B1D82 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_609BC11BD80F463EA6FC9A3E086613D5 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D0939E762D2F4563A0AF2DE700A5E3CF }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
