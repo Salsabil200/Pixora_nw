@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy PHP app to Azure Web App - pixora
+name: Build and deploy Laravel app to Azure Web App - pixora
 
 on:
   push:
@@ -13,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -21,38 +18,58 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.2'
+          extensions: pdo_mysql
+          ini-values: post_max_size=256M, upload_max_filesize=256M
 
-      - name: Check if composer.json exists
-        id: check_files
-        uses: andstor/file-existence-action@v1
+      # Cache composer (Biar build selanjutnya kenceng)
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
         with:
-          files: 'composer.json'
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
-      - name: Run composer install if composer.json exists
-        if: steps.check_files.outputs.files_exists == 'true'
-        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
+      # Install dependencies
+      - name: Install Composer dependencies
+        run: |
+          composer install --no-dev --prefer-dist --no-progress --no-interaction
+          composer dump-autoload -o
 
+      # Generate key if missing (tidak akan overwrite key dari Azure)
+      - name: Generate APP Key
+        run: php artisan key:generate --force || true
 
-      - name: Upload artifact for deployment job
+      # Optimize laravel
+      - name: Optimize Laravel
+        run: |
+          php artisan config:cache
+          php artisan route:cache
+
+      # Upload ONLY application files (bukan seluruh folder OS)
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: php-app
-          path: .
+          name: app
+          path: |
+            .
+            !node_modules/
+            !vendor/
+            !storage/logs/
+            !storage/framework/cache/
+            !storage/framework/sessions/
+            !tests/
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
 
     steps:
-      - name: Download artifact from build job
+      - name: Download app artifacts
         uses: actions/download-artifact@v4
         with:
-          name: php-app
-      
+          name: app
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -60,11 +77,10 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_609BC11BD80F463EA6FC9A3E086613D5 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D0939E762D2F4563A0AF2DE700A5E3CF }}
 
-      - name: 'Deploy to Azure Web App'
+      # Deploy to Azure
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
         with:
           app-name: 'pixora'
           slot-name: 'Production'
           package: .
-          
