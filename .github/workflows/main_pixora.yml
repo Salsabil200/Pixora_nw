@@ -22,7 +22,6 @@ jobs:
           extensions: pdo_mysql
           ini-values: post_max_size=256M, upload_max_filesize=256M
 
-      # Cache composer (Biar build selanjutnya kenceng)
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
@@ -30,23 +29,19 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      # Install dependencies
       - name: Install Composer dependencies
         run: |
           composer install --no-dev --prefer-dist --no-progress --no-interaction
           composer dump-autoload -o
 
-      # Generate key if missing (tidak akan overwrite key dari Azure)
-      - name: Generate APP Key
+      - name: Generate APP Key if missing
         run: php artisan key:generate --force || true
 
-      # Optimize laravel
       - name: Optimize Laravel
         run: |
           php artisan config:cache
           php artisan route:cache
 
-      # Upload ONLY application files (bukan seluruh folder OS)
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -59,10 +54,14 @@ jobs:
             !storage/framework/cache/
             !storage/framework/sessions/
             !tests/
+            !.github/
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Download app artifacts
@@ -77,7 +76,6 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_609BC11BD80F463EA6FC9A3E086613D5 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D0939E762D2F4563A0AF2DE700A5E3CF }}
 
-      # Deploy to Azure
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
